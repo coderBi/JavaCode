@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<display-name></display-name>
+
+	<!-- 在web容器中配置并实例化spring容器 -->
+	<!-- 指定spring配置文件。默认是在web根目录下面进行寻找。一般我们通过spring提供的classpath前缀进行寻找 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<!-- 如果有多个文件路径，之间 用逗号隔开 -->
+		<param-value>classpath:beans.xml</param-value>
+	</context-param>
+
+	<!-- 通过一个监听器对Spring容器进行初始化 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 添加一个spring提供的filter，解决页面到数据库的乱码问题 -->
+	<filter>
+		<filter-name>encoding</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encoding</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- 通过spring提供的filter解决session关闭导致的延迟加载出问题的情况。这个filter可以让session在整个请求期间保持打开（横跨整个request跟servlet） -->
+	<filter>
+		<filter-name>OpenSessionInViewFilter</filter-name>
+		<filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		 <filter-name>OpenSessionInViewFilter</filter-name>
+		 <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	
+	<!-- 通过一个servlet来实例化struts -->
+	<servlet>
+		<servlet-name>struts</servlet-name>
+		<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+		<init-param>
+			<!-- 指定struts配置文件的路径 -->
+			<param-name>config</param-name>
+			<param-value>/WEB-INF/struts-config.xml</param-value>
+		</init-param>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>struts</servlet-name>
+		<!-- 处理所有的.do结尾的请求 -->
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>

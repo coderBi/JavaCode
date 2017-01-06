@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+	<diskStore path="d:\cache\ssh\" /> <!-- 缓存存放的位置 -->
+	<!-- 配置一个默认缓存设置 -->
+	<!--maxElementsInMemory="1000" 最多存放1000个对象 -->
+	<!--eternal="false" 是不是永远不过期的，如果是true就会永远不过期 -->
+	<!--overflowToDisk="false" 如果对象溢出了，要不要把他放到硬盘上 -->
+	<!--timeToIdleSeconds="120" 一个对象最多的空闲时间 -->
+	<!--timeToLiveSeconds="180" 对象最大的存活时间 -->
+	<!--diskPersistent="false" 当jvm结束了，对象是否持久换保存 -->
+	<!--diskExpiryThreadIntervalSeconds="60" 指定用于清除过期对象的线程的轮询时间 -->
+	<defaultCache maxElementsInMemory="1000" eternal="false"
+		overflowToDisk="false" timeToIdleSeconds="120" timeToLiveSeconds="180"
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="60" />
+
+	<!-- 对区域cn.itcast.bean.Person进行个性化设置，例如这里将maxElementsInMemory设置成0，会导致缓存直接写入到硬盘。如果没有相应的设置，就采用默认的cache配置 -->
+	<Cache name="cn.itcast.bean.Person" maxElementsInMemory="0"
+		eternal="false" overflowToDisk="true" timeToIdleSeconds="300"
+		timeToLiveSeconds="600" diskPersistent="false" />
+</ehcache>

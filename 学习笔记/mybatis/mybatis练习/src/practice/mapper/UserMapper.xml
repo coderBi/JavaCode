@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="practice.mapper.UserMapper">
+
+	<!-- 开启本mapper的namespace下面的二级缓存 -->
+	<!-- <cache size="1024"></cache> -->
+	
+	<!-- 配置这个mapper的cache由ehcache管理 。在classpath下面配置ehcache.xml-->
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+
+	<resultMap type="User" id="selectAll_Result">
+		<!-- User普通属性填充 -->
+		<id column="id" property="id" />
+		<result column="username" property="username" />
+		<result column="birthday" property="birthday" />
+		<result column="gender" property="gender" />
+		<result column="address" property="address" />
+		<!-- 延迟查询里面的Orders -->
+		<collection property="orders" ofType="Orders"
+			select="practice.mapper.OrdersMapper.selectByUserId" fetchType="lazy"
+			column="id"></collection>
+	</resultMap>
+
+	<select id="selectAll" resultMap="selectAll_Result">
+		select * from user
+	</select>
+
+	<select id="selectById" parameterType="int" resultMap="selectAll_Result">
+		select *
+		from user where id=#{id}
+	</select>
+
+	<update id="updateUser" parameterType="User">
+		update user as u set
+		u.username=#{username},u.address=#{address},
+		u.gender=#{gender},u.birthday=#{birthday} where
+		u.id=#{id}
+	</update>
+</mapper>

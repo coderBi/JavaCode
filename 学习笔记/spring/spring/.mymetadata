@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="spirng"
+  id="myeclipse.1468572932957"
+  context-root="/spirng"
+  j2ee-spec="5.0"
+  archive="spirng.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

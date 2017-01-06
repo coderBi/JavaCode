@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	<context:component-scan base-package="cn.ss2h"></context:component-scan>
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	<context:property-placeholder location="classpath:c3po.config.properties" />
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbcUrl}"></property>
+		<property name="user" value="${user}"></property>
+		<property name="password" value="${password}"></property>
+		<property name="initialPoolSize" value="${initialPoolSize}"></property>
+		<property name="minPoolSize" value="${minPoolSize}"></property>
+		<property name="maxPoolSize" value="${maxPoolSize}"></property>
+		<property name="maxIdleTime" value="${maxIdleTime}"></property>
+		<!-- 这个属性指定当连接池耗尽的时候一次性生成新的连接的最大数量 -->
+		<property name="acquireIncrement" value="${acquireIncrement}"></property>
+		<!-- 进行空闲连接检测的轮询时间 -->
+		<property name="idleConnectionTestPeriod" value="${idleConnectionTestPeriod}"></property>
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="mappingResources">
+			<list>
+				<value>cn/ss2h/domain/Gender.hbm.xml</value>
+				<value>cn/ss2h/domain/Person.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<value>
+				hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
+				hibernate.hbm2ddl.auto=update
+				hibernate.show_sql=true
+				hibernate.format_sql=true
+
+				<!-- 配置二级缓存 -->
+				hibernate.cache.use_second_level_cache=true <!-- 使用二级缓存 -->
+				hibernate.cache.use_query_cache=false <!-- 不适用查询缓存 -->
+				hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider
+			</value>
+		</property>
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>

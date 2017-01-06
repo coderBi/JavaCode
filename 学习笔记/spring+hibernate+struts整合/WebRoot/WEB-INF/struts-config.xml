@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+ "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+ "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+
+<struts-config>
+	<form-beans>
+		<form-bean name="personForm" type="cn.itcast.web.formbean.PersonForm"></form-bean>
+	</form-beans>
+	<action-mappings>
+		<action path="/person/list" validate="false">
+			<forward name="list" path="/WEB-INF/page/personlist.jsp"></forward>
+		</action>
+		<action path="/person/manage" scope="request" validate="false"
+			parameter="method" name="personForm">
+			<forward name="message" path="/WEB-INF/page/message.jsp"></forward>
+			<forward name="listForm" path="/personForm.jsp"></forward>
+			<forward name="list" path="/WEB-INF/page/personlist.jsp"></forward>
+		</action>
+	</action-mappings>
+
+	<!-- 配置一个controller，让struts在自己创建action之前会去向spring容器获取。 -->
+	<!-- 注意：如果到spring容器没有获取到name为action的路径的bean。struts会返回来通过自己的那一套也就是通过type属性进行action类对象的创建。 -->
+	<controller>
+		<set-property property="processorClass"
+			value="org.springframework.web.struts.DelegatingRequestProcessor" />
+	</controller>
+</struts-config>

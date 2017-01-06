@@ -1,0 +1,8 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../config/ehcache.xsd">
+	<diskStore path="D:\cache\MybatisPractice" />
+	<defaultCache maxElementsInMemory="0" eternal="false"
+		overflowToDisk="true" timeToIdleSeconds="120" timeToLiveSeconds="120"
+		diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU">
+	</defaultCache>
+</ehcache>

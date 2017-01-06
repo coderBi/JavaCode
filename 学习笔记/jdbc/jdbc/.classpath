@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/资料与记录（新装硬盘）/Code/JavaCode/学习笔记/jdbc/jdbc/mysql-connector-java-5.1.26-bin.jar"/>
+	<classpathentry kind="lib" path="D:/资料与记录（新装硬盘）/Code/JavaCode/学习笔记/jdbc/jdbc/commons-dbcp-1.2.2.jar"/>
+	<classpathentry kind="lib" path="D:/资料与记录（新装硬盘）/Code/JavaCode/学习笔记/jdbc/jdbc/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="D:/资料与记录（新装硬盘）/Code/JavaCode/学习笔记/jdbc/jdbc/commons-pool.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

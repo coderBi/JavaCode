@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+ "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+ "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="date" namespace="/dateConvert" extends="struts-default">
+        <global-results>
+            <result name="input">
+                /WEB-INF/page/showErrorMsg.jsp
+            </result>
+        </global-results>
+        <action name="*" class="cn.itcast.action.typeConvert.DateTypeConvert" method="{1}">
+            <result name="date">
+                /WEB-INF/page/date.jsp
+            </result>
+        </action>
+    </package>
+    
+    <package name="useRequestSesionAndServlet" namespace="/use/request/session/servlet" extends="struts-default">
+        <action name="*" class="cn.itcast.action.request.session.servlet.UseRequestSessionAndServlet" method="{1}">
+            <result name="use">
+                /WEB-INF/page/showUseRequestSesionAndServlet.jsp
+            </result>
+        </action>
+    </package>
+    
+    <package name="uploadFiles" namespace="/upload" extends="struts-default">
+        <action name="*" class="cn.itcast.action.uploadFile.UploadFiles" method="{1}">
+            <result name="upload">
+                /WEB-INF/page/upload.jsp
+            </result>
+        </action>
+    </package>
+    
+    
+    <package name="interceptor" namespace="/session" extends="struts-default">
+        <interceptors>
+            <interceptor name="permission" class="cn.itcast.action.interceptor.MyInterceptor"/>
+        </interceptors>
+        <global-results>
+            <result name="showError">
+                /WEB-INF/page/showErrorMsg.jsp
+            </result>
+            <result name="showMessage">
+                /WEB-INF/page/showMessage.jsp
+            </result>
+            <result name="login">
+                /WEB-INF/page/login.jsp
+            </result>
+        </global-results>
+        <action name="login" class="cn.itcast.action.interceptor.SetSession" method="setLogin">
+        </action>
+        <action name="logout" class="cn.itcast.action.interceptor.SetSession" method="setLogout">
+        </action>
+        <action name="useInter" class="cn.itcast.action.interceptor.TestInterceptor" method="useInterceptor">
+            <interceptor-ref name="defaultStack"/>
+            <interceptor-ref name="permission"/>
+        </action>
+        <action name="notUseInter" class="cn.itcast.action.interceptor.TestInterceptor" method="notUseInterceptor">
+        </action>
+    </package>
+    
+    <package name="validate" namespace="/validate" extends="struts-default">
+        <action name="*" class="cn.itcast.action.validate.Person" method="{1}">
+            <result name="personForm">
+                /WEB-INF/page/personForm.jsp
+            </result>
+            <result name="input">
+                /WEB-INF/page/showErrorMsg.jsp
+            </result>
+        </action>
+    </package>
+    
+    <package name="ognl" namespace="/ognl" extends="struts-default">
+        <action name="*" class="cn.itcast.ognl.struts.Ognl">
+            <result name="ognl">
+                /WEB-INF/page/ognl.jsp
+            </result>
+        </action>
+    </package>
+    
+    <package name="token" namespace="/token" extends="struts-default">
+        <action name="*" class="cn.itcast.InterceptorToken.TokenInForm">
+            <interceptor-ref name="defaultStack"/>
+            <interceptor-ref name="token"/><!--引入token拦截器，在前面先引入默认拦截器-->
+            <result name="tokenInForm">
+                /WEB-INF/page/tokenInForm.jsp
+            </result>
+            <result name="invalid.token">
+                /WEB-INF/page/tokenInForm.jsp
+            </result>
+        </action>
+    </package>
+</struts>

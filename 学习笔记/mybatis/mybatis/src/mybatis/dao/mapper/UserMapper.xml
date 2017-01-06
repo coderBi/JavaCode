@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，对sql进行分类管理，对各种sql进行隔离。如果要是用mapper代理开发，这里的namespace就有特殊意义 -->
+<mapper namespace="mybatis.dao.mapper.UserMapper"> <!-- 这里的namespace跟mapper接口名一致 -->
+	<!-- 这里的id跟mapper接口里面的函数名一致 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultType="mybatis.pojo.Person">
+		select * from user where id=#{id} <!--#{}标识一个占位符 ,{}中存放的是参数名称。如果参数是简单类型，参数名可以是value或者其他任意 -->
+	</select>
+
+	<!-- 传递包装类型 -->
+	<select id="findUserList" parameterType="mybatis.pojo.PersonQueryVo"
+		resultType="personCustom">
+		select * from user where username like
+		"%${personCustom.username}%"
+	</select>
+
+	<resultMap type="mybatis.pojo.Person" id="selectUser_resultMap">
+		<id column="id" property="id" />
+		<result column="username" property="username" />
+		<result column="birthday" property="birthday" />
+		<result column="gender" property="gender" />
+		<result column="address" property="address" />
+	</resultMap>
+
+	<resultMap type="mybatis.pojo.Person" id="selectUserOrders_resultMap"
+		extends="selectUser_resultMap">
+		<collection property="orders" ofType="mybatis.pojo.Orders">
+			<id column="orders_id" property="id" />
+			<result column="user_id" property="user_id" />
+			<result column="number" property="number" />
+			<result column="createtime" property="createtime" />
+			<result column="note" property="note" />
+		</collection>
+	</resultMap>
+
+	<sql id="UserOrders_query_fields">
+		user.id,user.username,user.gender,user.address,user.birthday,
+		orders.id as
+		orders_id,orders.user_id,orders.number,orders.createtime,orders.note
+	</sql>
+	<!-- 查找User，关联查找Orders -->
+	<select id="selectUserOrders" resultMap="selectUserOrders_resultMap">
+		select
+		<include refid="UserOrders_query_fields" />
+		from
+		user,
+		orders
+		where
+		user.id=orders.user_id
+	</select>
+</mapper>

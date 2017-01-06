@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+ "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+ "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<!-- 指定默认的编码，相当于调用了HttpServletRequest的setCharacterEncoding -->
+	<constant name="struts.i18n.encoding" value="utf-8"></constant>
+	<constant name="struts.ui.theme" value="simple" />
+	<!--<constant name="struts.action.extension" value="action"/> -->
+	<!-- 开发模式下配置浏览器不缓存静态内容 -->
+	<constant name="struts.serve.static.browserCache" value="false" />
+	<!-- struts配置文件修改了，会自动加载 -->
+	<constant name="struts.configuration.xml.reload" value="ture"></constant>
+	<!-- 开发模式，浏览器上打印更多的信息 -->
+	<constant name="struts.devMode" value="true" />
+	<!-- 指定struts的对象工厂为spring -->
+	<constant name="struts.objectFactory" value="spring" />
+
+	<package name="person" namespace="/person/manage" extends="struts-default">
+		<global-results>
+			<result name="list">/WEB-INF/page/listPersons.jsp</result>
+			<result name="form">/WEB-INF/page/personForm.jsp</result>
+			<result name="add">/WEB-INF/page/message.jsp</result>
+			<result name="input">/WEB-INF/page/showError.jsp</result>
+			<result name="message">/WEB-INF/page/message.jsp</result>
+		</global-results>
+		<!-- 由于指定了struts对象由spring提供，下面的class里面存放的是spring bean的标识 -->
+		<action name="list" class="personAction" method="list" />
+		<action name="form" class="personAction" method="form" />
+		<action name="add" class="personAction" method="add" />
+		<action name="checkPersonName" class="personAction" method="checkPersonName" />
+		<action name="*" class="personAction" method="list" />
+	</package>
+	<package name="gender" namespace="/gender" extends="struts-default">
+		<global-results>
+			<result name="message">/WEB-INF/page/message.jsp</result>
+		</global-results>
+		<action name="getAll" class="cn.ss2h.action.GenderAction"
+			method="getAll">
+			<result name="json">
+				/WEB-INF/page/printJson.jsp
+			</result>
+		</action>
+	</package>
+
+	<package name="default" extends="struts-default">
+		<global-results>
+			<result name="message">/WEB-INF/page/message.jsp</result>
+			<result name="json">
+				/WEB-INF/page/printJson.jsp
+			</result>
+		</global-results>
+	</package>
+</struts>

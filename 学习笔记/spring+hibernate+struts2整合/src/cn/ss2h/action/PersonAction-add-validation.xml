@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE validators PUBLIC
+        "-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+        "http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
+<validators>
+	<field name="person">
+		<field-validator type="required">
+			<message key="required"></message>
+		</field-validator>
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[person.name != null && person.name != ""]]></param>
+			<message>name不可为空</message>
+		</field-validator>
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[person.gender != null && person.gender.id != null]]></param>
+			<message>gender不能为空</message>
+		</field-validator>
+	</field>
+</validators>

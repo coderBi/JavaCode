@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.dao.mapper.OrderdetailMapper">
+
+	<!-- S: resultMap -->
+
+	<!-- 查询Orderdetail结果映射 -->
+	<resultMap type="mybatis.pojo.Orderdetail" id="Orderdetail_resultMap">
+		<id column="id" property="id" />
+
+		<result column="orders_id" property="orders_id" />
+		<result column="items_id" property="items_id" />
+		<result column="items_num" property="items_num" />
+	</resultMap>
+
+	<!-- 查询Orderdetail,关联查询orders-->
+	<resultMap type="mybatis.pojo.Orderdetail" id="OrderdetailOrders_resultMap"
+		extends="Orderdetail_resultMap">
+		<association property="order" javaType="mybatis.pojo.Orders">
+			<id column="orders_id" property="id" />
+
+			<result column="user_id" property="user_id" />
+			<result column="number" property="number" />
+			<result column="createtime" property="createtime" />
+			<result column="note" property="note" />
+		</association>
+	</resultMap>
+	
+	<!-- 查询Orderdetail,关联查询orders，关联查询items -->
+	<resultMap type="mybatis.pojo.Orderdetail" id="selectOrderdetailOrdersItems_resultMap"
+		extends="OrderdetailOrders_resultMap">
+		<association property="item" javaType="mybatis.pojo.Iterms">
+			<id column="items_id" property="id" />
+
+			<result column="name" property="name" />
+			<result column="price" property="price" />
+			<result column="detail" property="detail" />
+			<result column="pic" property="pic" />
+			<result column="items_createtime" property="createtime" />
+		</association>
+	</resultMap>
+	<!-- E: resultMap -->
+
+	<!-- S: sql -->
+
+	<!--字段列表： 查询Orderdetail,关联查询orders, od:orderdetail的别名, o：orders的别名 -->
+	<sql id="selectOrderdetailOrders_query_fields">
+		od.id,od.orders_id,od.items_id,od.items_num,
+		o.user_id,o.number,o.createtime,o.note
+	</sql>
+
+	<!--条件： 查询Orderdetail,关联查询orders, od:orderdetail的别名, o：orders的别名 -->
+	<sql id="selectOrderdetailOrders_query_where">
+		and od.orders_id=o.id
+	</sql>
+	
+	<!-- 字段列表： 查询Orderdetail,关联查询orders,关联查询items， od:orderdetail的别名, o：orders的别名 ， i：items的别名-->
+	<sql id="selectOrderdetailOrdersItems_query_fields">
+		od.id,od.orders_id,od.items_id,od.items_num,
+		o.user_id,o.number,o.createtime,o.note,
+		i.name,i.price,i.detail,i.pic,i.createtime as items_createtime
+	</sql>
+	
+	<!-- from： 查询Orderdetail,关联查询orders-->
+	<sql id="selectOrderdetailOrders_query_from">
+		orderdetail as od,
+		orders as o
+	</sql>
+	
+	<!-- from： 查询Orderdetail,关联查询orders,关联查询items-->
+	<sql id="selectOrderdetailOrdersItems_query_from">
+		orderdetail as od,
+		orders as o,
+		items as i
+	</sql>
+	
+	<!-- 条件： 查询Orderdetail,关联查询orders,关联查询items-->
+	<sql id="selectOrderdetailOrdersItems_query_where">
+		and od.orders_id=o.id
+		and od.items_id=i.id
+	</sql>
+	<!-- E: sql -->
+
+	<!-- S: select -->
+	
+	<!-- 查询Orderdetail,关联查询orders -->
+	<select id="selectOrderdetailOrders" resultMap="OrderdetailOrders_resultMap">
+		select
+		<include refid="selectOrderdetailOrders_query_fields" />
+		from
+		<include refid="selectOrderdetailOrders_query_from"/>
+		<where>
+			<include refid="selectOrderdetailOrders_query_where" />
+		</where>
+	</select>
+	
+	<!-- 查询Orderdetail,关联查询orders, 关联查询orderdetail -->
+	<select id="selectOrderdetailOrdersItems" resultMap="selectOrderdetailOrdersItems_resultMap">
+		select
+		<include refid="selectOrderdetailOrdersItems_query_fields"/>
+		from
+		<include refid="selectOrderdetailOrdersItems_query_from"/>
+		<where>
+			<include refid="selectOrderdetailOrdersItems_query_where"/>
+		</where>
+	</select>
+	<!-- E: select -->
+</mapper>

@@ -1,0 +1,75 @@
+1，ORM: 对象关系映射，用于从对象到数据库之间进行数据交换。其本身处理了各种数据库具体实现的差异。常用的orm有Hibernate等。
+
+2，Hibernate配置：
+a）.cfg.xml： 
+---数据库相关配置一共五项： url name pwd driver dialect。例如 <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+---可以选择性的配置：例如 <property name="show_sql">true</property>，这样可以在控制台里面看到执行的sql语句。又如：<property name="format_sql">true</property>,会格式化sql，这样显示的会更清晰。
+----导入映射文件： <mapping resource="cn/itcast/bean/User.hbm.xml"/>
+b) xxx.hbm.xml：前面的xxx名一般跟相应的bean的类名一样。并且二者放在一个包里面。 具体的书写格式：
+<hibernate-mapping package="cn.itcast.bean">
+	<class name="User" table="t_usr">
+		<id name="id" type="int" column="id">
+			<generator class="native"/>
+		</id>
+		<property name="name" type="string" column="name"/> //表示User类里面的name属性跟 t_user表里面的 name 列对应。
+	</class>
+</hibernate-mapping>
+c） 关于IID（id identity）： generator
+<generator class="native"> 这里的class可以取的值有： sequence  increment identity hilo native assign等。一般指定为native就会根据数据库自动选择identity或者sequence进行主键的增长
+
+3，Hibernate一般使用步骤：
+ａ）从配置里面得到sessionFactory: 
+Configuration cfg = new Configuration();
+cfg.configure("hibernate.cfg.xml"); //读取配置，也可以直接是cfg.configure()。默认的读取classPath里面的hibernate.cfg.xml
+SessionFactory sessionFactory = cfg.buildSessionFactory(); //session工厂是线程安全的，所以一般全局只需要一个就够了。
+b) 具体操作：
+---首先得到session：Session session = sessionFactory.openSession(); //打开一个session
+---开启事务： Transaction ts = session.beginTransaction();
+---执行sql： 例如： session.save(user); session.delete(user); session.get(User.class,1); Long count = session.createQuery("select count(*) from User").uniqueResult();
+----commit或者执行到catch里面的rollback。值得注意的是，Hibernate将sql异常封成了runtimeException抛出来了。在catch里面rollback语句后面还要继续将这个异常throw出去。
+----finally里面执行： session.close();
+c）代码中增加配置文件：
+cfg.addResource(String resource) : 导入一个指定位置的映射文件
+cfg.addClass(class clazz): 导入与指定类同一个包里面与指定类名称相同后缀是hbm.xml的映射文件。
+
+4，增加自动生成表结构：
+a）在主配置文件 cfg.xml中： 
+<property name="hbm2ddl.atuo">update</property> //这里update位置还可以是create create-drop validata.
+b） 使用SchemaExport在代码中调用生成： 
+SchemaExport se = new SchemaExport(new Configuration().configure());
+se.create(true,ture); //两个参数，第一个表示在控制台打印相应的建表语句，第二个表示会到数据库里面执行。
+
+5，关于session绑定： 在一次请求中，不应该是每次调用一个model的方法就开一次跟关一次session。应该在一次请求中用一个session，可以通过在线程绑定一个session来实现。
+a）自己实现线程绑定：通过ThreadLocal对象：
+---public Utils{ public static  ThreadLocal<Session>  threadLocal = new ThreadLocal<Session>();}
+---在过滤器：
+class TxFilter implements Filter {
+	public void doFilter(request,response,chain){
+		session = sf.openSession();
+		Utils.threadLocal.set(session);
+		try{
+			tx = session.beginTransaction();
+			chain.doFilter(); //放行
+			tx.commit();
+		}catch(){
+			tx.rollback();
+			throw e;
+		}finally {
+			session.close();
+			Utils.threadLocal.remove(); //移出这个绑定对象
+		}
+	}
+}
+----在实际model类里面：
+session = Utils.threadLocal.get(); //得到当前绑定的对象
+
+b）通过sessionFactory.getCurrentSesion(): 这个方法会在没有绑定的时候自动绑定一个session对象，并且在commit或者rollback之后自动关闭这个session并且解除绑定。
+---note： getCurrentSesion使用，不需要进行自己的session关闭，因为在commit跟rollback之后Hibernate会自己关闭session。
+---note： 使用getCurrentSession需要在主配置里面配置：
+<property name="current_session_context_class">thread</property>
+
+*******************************************
+小知识点：
+如果判断一个object是否是数组： obj.getClass().isArray()
+要想判断更具体是那种数组： if(obj == xxx[].class) )
+*******************************************

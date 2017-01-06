@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="cn.hibernate_homework.bean">
+    <class name="Employee" table="t_employee">
+        <id name="id" type="long" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="name" type="string" column="name"/>
+        <property name="gender" type="boolean" column="gender"/>
+        <property name="birthday" type="date" column="birthday"/>
+        <property name="desc" type="string" column="desc_"/>
+        <one-to-one name="account" class="UserAccount" property-ref="employee"/>
+        <many-to-one name="department" class="Department" column="department"/>
+    </class>
+</hibernate-mapping>

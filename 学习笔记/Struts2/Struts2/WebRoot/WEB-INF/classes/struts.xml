@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+ "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+ "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<!-- 设置默认编码 -->
+	<constant name="struts.i18n.encoding" value="utf-8"/>
+	<!--设置默认主题为simple，就是不需要struts提供的主题-->
+	<constant name="struts.ui.theme" value="simple"/>
+    <include file="MyAction.xml"/>
+	<!--
+    这里包名类似于java里面的类包名，namespace指明的是action前面的路径，
+    例如home/controller。Struts提供的大部分过滤器都在struts-default里面，要使用它们，需要对这个包进行继承
+    -->
+    <package name="itcast" namespace="/test" extends="struts-default">
+        <global-results>
+            <result name="showError">
+                /WEB-INF/page/showErrorMsg.jsp
+            </result>
+        </global-results>
+        <action name="helloworld" class="cn.itcast.action.firstApp.HelloWorldAction" method="execute">
+            <param name="message">
+                /WEB-INF/page/showMessage.jsp
+            </param>
+            <result name="success">
+                /WEB-INF/page/hello.jsp<!--success视图对应的视图文件路径-->
+            </result>
+        </action>
+    </package>
+    
+    <package name="default" extends="struts-default">
+        <action name="default">
+            <result>
+                /WEB-INF/index.jsp
+            </result>
+        </action>
+    </package>
+</struts>

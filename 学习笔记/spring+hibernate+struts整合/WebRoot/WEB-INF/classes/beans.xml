@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	<!-- 添加托管 -->
+	<context:component-scan base-package="cn.itcast"/>
+	<!-- 配置aop注解 -->
+	<aop:aspectj-autoproxy />
+	<!-- 指定jdbc的配置文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties" />
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<!-- 由于指定了jdbc配置文件，这里的每一个数据源属性的value都可以用类似于el表达式的方式获取 -->
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<property name="initialSize" value="${initialSize}" />
+		<property name="maxActive" value="${maxActive}" />
+		<property name="maxIdle" value="${maxIdle}" />
+		<property name="minIdle" value="${minIdle}" />
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<!-- 配置事务管理的数据源 -->
+		<!-- <property name="dataSource" ref="dataSource" /> -->
+		<!-- 配置Hibernate对事务进行管理 -->
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 继承Hibernate -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>cn/itcast/bean/Person.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<value>
+				hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
+				hibernate.hbm2ddl.auto=update
+				hibernate.show_sql=false
+				hibernate.format_sql=false
+
+				<!-- 配置二级缓存 -->
+				hibernate.cache.use_second_level_cache=true <!-- 使用二级缓存 -->
+				hibernate.cache.use_query_cache=false <!-- 不适用查询缓存 -->
+				hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider <!-- 配置缓存使用的类，需要引入相应的包 -->
+			</value>
+		</property>
+	</bean>
+
+	<!-- 添加一个action类 -->
+	<bean name="/person/manage" class="cn.itcast.web.action.PersonManageAction"></bean>
+</beans>

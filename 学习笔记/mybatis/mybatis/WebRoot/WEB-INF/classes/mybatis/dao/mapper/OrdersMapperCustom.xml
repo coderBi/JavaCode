@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，对sql进行分类管理，对各种sql进行隔离。如果要是用mapper代理开发，这里的namespace就有特殊意义 -->
+<mapper namespace="mybatis.dao.mapper.OrdersMapperCustom"> <!-- 这里的namespace跟mapper接口名一致 -->
+	<sql id="ordersUser_select_fields">
+		orders.*,user.username,user.gender,user.birthday,user.address
+	</sql>
+	<!-- 查询订单，关联查询用户 -->
+	<select id="findOrdersUser" resultType="mybatis.pojo.OrdersCustom">
+		select
+		<include refid="ordersUser_select_fields"/>
+		from
+		orders,
+		user
+		where
+		orders.user_id=user.id 
+	</select>
+</mapper>

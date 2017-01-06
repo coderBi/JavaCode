@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="cn.ss2h.domain.Person" table="t_person">
+		<id name="id">
+			<generator class="native"></generator>
+		</id>
+		<property name="name" not-null="true"  unique="true"/>
+		<!-- 本方genderId与gender表存在多对一的关系 -->
+		<many-to-one name="gender" column="genderId" not-null="true" class="cn.ss2h.domain.Gender"/>
+	</class>
+</hibernate-mapping>

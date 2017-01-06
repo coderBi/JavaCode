@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，对sql进行分类管理，对各种sql进行隔离。如果要是用mapper代理开发，这里的namespace就有特殊意义 -->
+<mapper namespace="test">
+	<!-- 配置多条sql语句 -->
+	<!-- 通过select执行查询，id用于标识statement，也就是标识一条sql。sql会被封装到mappedStatement对象中 -->
+	<select id="selectById" parameterType="java.lang.Integer"
+		resultType="user">
+		select * from user where id=#{id} <!--#{}标识一个占位符 ,{}中存放的是参数名称。如果参数是简单类型，参数名可以是value或者其他任意 -->
+	</select>
+
+	<!-- 查询多条记录，返回一个list,resultType指的是每一条记录的类型。 -->
+	<select id="selectByName" parameterType="java.lang.String"
+		resultType="user">
+		select * from user where username like '%${value}%' <!-- ${}会将参数直接拼接到sql语句上面，可能会引起sql注入，还有如果是基本类型的参数，${}里面的名字只能是value -->
+	</select>
+
+	<!-- 添加 -->
+	<insert id="insertUser" parameterType="user">
+		<!-- 得到插入数据的主键 .在select之后指定将主键值注入到id属性里面。需要指定结果类型 -->
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+		insert into user(username,birthday,gender,address)
+		values(#{username},#{birthday},#{gender},#{address}) <!--这里用的是ognl表达式 -->
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from user where
+		id=#{value}
+	</delete>
+
+	<!-- 更新 -->
+	<update id="updateUser" parameterType="user">
+		update user set
+		username=#{username},birthday=#{birthday},gender=#{gender},address=#{address}
+		where id=#{id}
+	</update>
+</mapper>

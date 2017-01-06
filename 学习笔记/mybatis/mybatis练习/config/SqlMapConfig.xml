@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 加载jdbc配置 -->
+	<properties resource="db_config/db.properties"></properties>
+
+	<settings>
+		<!-- 以下两项开启懒加载 -->
+		<!-- lazyLoadingEnabled默认是false，也是说不支持懒加载 -->
+		<setting name="lazyLoadingEnabled" value="true" />
+
+		<!-- aggressiveLazyLoading（积极加载）默认是true，意味着可能会被全部加载（也就是可能出现懒加载对象并不懒加载）。设置为false，懒加载对象按需加载 -->
+		<setting name="aggressiveLazyLoading" value="false" />
+		
+	</settings>
+
+	<!-- 类型别名 -->
+	<typeAliases>
+		<package name="practice.dao.po" />
+	</typeAliases>
+
+	<!-- 和spring整合之后，environments整个都废弃 -->
+	<environments default="development">
+		<environment id="development">
+			<!-- 使用jdbc事务管理，事务控制由mybatis -->
+			<transactionManager type="JDBC"></transactionManager>
+			<!-- 数据库连接池，由mybatis控制 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+
+
+
+	<!-- 加载mapper文件 -->
+	<mappers>
+		<package name="practice.mapper" />
+	</mappers>
+</configuration>

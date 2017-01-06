@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="spring+hibernate+struts整合"
+  id="myeclipse.1468917623105"
+  context-root="/ssh"
+  j2ee-spec="5.0"
+  archive="spring+hibernate+struts整合.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

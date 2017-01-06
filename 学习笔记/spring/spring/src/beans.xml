@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	<!-- 设置自动扫描 -->
+	<context:component-scan base-package="cn.itcast" />
+	<!-- 配置aop注解 -->
+	<aop:aspectj-autoproxy />
+	<!-- 指定jdbc的配置文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties"/>
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	<!-- 由于指定了jdbc配置文件，这里的每一个数据源属性的value都可以用类似于el表达式的方式获取 -->
+		<property name="driverClassName" value="${driverClassName}"/>
+		<property name="url" value="${url}"/>
+		<property name="username" value="${username}"/>
+		<property name="password" value="${password}"/>
+		<property name="initialSize" value="${initialSize}"/>
+		<property name="maxActive" value="${maxActive}"/>
+		<property name="maxIdle" value="${maxIdle}"/>
+		<property name="minIdle" value="${minIdle}"/>
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 配置事务管理的数据源 -->
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="personService" class="cn.itcast.service.impl.PersonServiceBean"
+		scope="prototype">
+		<!-- 设置person属性，注入引用的bean -->
+		<property name="person" ref="person"></property>
+	</bean>
+	<bean id="person" class="cn.itcast.dao.impl.PersonBean"></bean>
+	<bean id="personServiceInitDestroy" class="cn.itcast.service.impl.PersonServiceBean"
+		lazy-init="default" init-method="init" destroy-method="destroy">
+	</bean>
+	<!-- 调用工厂的静态方法 -->
+	<bean id="personService1" class="cn.itcast.service.impl.PersonServiceBeanFacotry"
+		factory-method="createPersonServiceBean"></bean>
+	<!-- 调用另一个bean的一个方法 -->
+	<!-- 定义工厂bean -->
+	<bean id="personServiceFacotry" class="cn.itcast.service.impl.PersonServiceBeanFacotry"></bean>
+	<bean id="personService2" factory-bean="personServiceFacotry"
+		factory-method="createPersonServiceBean1"></bean>
+	<bean id="personService3" class="cn.itcast.service.impl.PersonServiceBean">
+		<!-- 设置构造函数参数,index从0开始。如果是复杂类型需要提供type属性，一般类型通过value属性设置 -->
+		<constructor-arg index="0" type="cn.itcast.dao.Person"
+			ref="person"></constructor-arg>
+	</bean>
+
+</beans>

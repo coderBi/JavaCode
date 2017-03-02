@@ -3,8 +3,6 @@
  */
 package mybatis.dao.mapper;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 
 import mybatis.pojo.OrdersCustom;

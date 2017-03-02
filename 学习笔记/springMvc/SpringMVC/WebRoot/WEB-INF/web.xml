@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <display-name></display-name>
+  	
+  <!-- 配置前端控控制器 -->
+  <servlet>
+  	<servlet-name>springmvc</servlet-name>
+  	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  	<!-- contextConfigLocation配置springmvc加载的配置文件。如果不配置，默认加载的是/WEB-INF/servlet名称-servlet.xml-->
+  	<init-param>
+  		<param-name>contextConfigLocation</param-name>
+  		<param-value>classpath:springmvc.xml</param-value>
+  	</init-param>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>springmvc</servlet-name>
+  	<!-- url-pattern配置的三种方式
+  		①：*.action，处理action请求后缀
+  		②：/ 所有访问的地址都进行解析，对于惊天文件例如图片，需要配置不让DispatcherServlet解析。这种方式可以实现restful风格的url
+  		③：/* 测试发现这样配置有问题，因为如果是转发到一个jsp，发现这个jsp也会被DispatcherServlet解析（jsp里面进行解析是找不到Handler的所以会出错）
+  	 -->
+  	<url-pattern>*.action</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

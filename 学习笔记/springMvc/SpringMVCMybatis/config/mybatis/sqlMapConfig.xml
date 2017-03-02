@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!-- 全局的setting配置  根据需要添加（例如二级缓存等） -->
+	
+	<!-- 配置别名 -->
+	<typeAliases>
+		<!-- 批量扫描 -->
+		<package name="ssm.po"/>
+	</typeAliases>
+	
+	<!-- 不需要配置mappers了  因为使用了spring与mybatis整合包进行mapper的扫描 
+		这种方式必须遵循 ：mapper.xml 和 mapper.java的名字相同并且在一个目录。
+	-->
+	
+</configuration>

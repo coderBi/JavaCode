@@ -1,0 +1,21 @@
+如果是post乱码，可以使用spring的过滤器，在web.xml中添加代码：
+	<!-- 处理post乱码 -->
+	  <filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	  </filter>
+	  <filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	  </filter-mapping>
+
+如果get乱码，因为tomcat服务器默认是配置的iso8859-1，如果要处理get乱码可以配置server.xml:
+	<Connector URIEncoding="utf-8" connectionTimeout="2000" post="8080" protocol="HTTP/1.1" redirectPost="8443"/>
+
+如果是get乱码，也可以人为的进行iso8859-1到utf-8的转换
+	
+	String username = new String(request.getParamter("username").getBytes("ISO8859-1"),"utf-8")

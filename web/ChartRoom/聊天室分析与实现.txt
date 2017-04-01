@@ -1,0 +1,59 @@
+需要的jar包：
+	mysql数据库连接包: mysql-connector-java-版本号-bin.jar。 使用的jdbc的连接
+	c3p0包： 需要配置c3p0-config.xml文件
+	DButils包：比hibernate轻, commons.dbutils-1.4.jar
+	JavaBean：使用BeanUtils可以快速生成bean。 dbutils跟beanutils都是Apache提供的
+
+配置：
+	-----c3p0-config.xml:
+		<?xml version="1.0" encoding="utf-8"?>
+		<c3p0-config>
+			<default-config>
+				<property name="driverClass">com.mysql.jdbc.Driver</property>
+				<property name="jdbcUrl">jdbc:mysql:///java_chartroom</property>
+				<property name="user">root</property>
+				<property name="password">123</property>
+			</default-config>
+		</c3p0-config>
+	-----添加 chartroom.utils包下面添加JDBCUtils.java
+		public class JDBCUtils {
+			private static ComboPooledDataSource dataSource = new ComboPooledDataSource(); //默认加载classpath下面的c3p0.properties 或者c3p0-config.xml
+			
+			//获取连接池
+			public static DataSource getDataSource(){
+				return dataSource;
+			}
+			
+			//获取连接
+			public static Connection getConnection(){
+				Connection connection = null;
+				try{
+					connection = dataSource.getConnection();
+				} catch(SQLException e){
+					e.printStackTrace();
+				}
+				return connection;
+			}
+		}
+
+	-----在dao里面就可以通过 JDBCUtils.getDataSource 得到数据源进行操作数据库。例如：
+		public User login(User user) throws Exception {
+			//创建一个QueryRunner  用来执行sql语句
+			QueryRunner queryRunner = new QueryRunner(JDBCUtils.getDataSource());
+			
+			//要执行的sql
+			String sql = "select * from user where username=? and password=?";
+			
+			User userToReturn = null;
+			try{
+				userToReturn = queryRunner.query(sql, new BeanHandler<User>(User.class),user.getUsername(),user.getPassword());
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			return userToReturn;
+		}
+
+
+遇到的问题分析：
+	①：同一个浏览器先后不同的用户登录，由于代码中只是修改了session中的user字段，但是其他的信息没有修改。如果在实际运用中，可能出现不同的用户登录，购物车等其他session信息被共享了，这样不安全。所以另一个用户登录的时候先清空session中的原先数据。
+	②：不同的浏览器，用同一个用户登录，第二个浏览器登录的时候会替换userMap里面相应user对应的session。之前第一个浏览器的session因为不在userMap里面所以不会显示在用户列表里面；另一方面由于第一个浏览器的session也还是在，实际上两个浏览器算是一个用户，所以通过用户列表可以剔除掉第二个浏览器的session但是没有办法操作第一个浏览器的session导致实际上这个用户还是可用的（不能成功踢出）。这里的解决方案是第二个浏览器登录的时候，判断用户是否已经在用户列表里面如果在就先踢出第一个浏览器的用户。

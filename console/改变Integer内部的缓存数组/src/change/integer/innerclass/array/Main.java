@@ -98,7 +98,7 @@ public class Main {
 	}
 
 	/**
-	 * 改进实现。 因为返回的 Integer[] 在java中同样是以前对象的引用。所以直接修改这个数组，也是修改Integer内部类对象的属性
+	 * 改变Integer内部类的缓存数组，改进实现。 因为返回的 Integer[] 在java中同样是以前对象的引用。所以直接修改这个数组，也是修改Integer内部类对象的属性
 	 * 
 	 * @throws NoSuchFieldException
 	 * @throws SecurityException
